@@ -1,0 +1,344 @@
+------------------------------------
+EXAMEN 2 VICTOR AMAYA 
+___________________________________
+
+EJERCICIO 1
+
+
+
+CORE SPS
+----------------------
+
+TUNEL GRE
+----------------
+interface tunnel 10
+ip address 10.10.10.1 255.255.255.252
+tunnel source gig0/0
+tunnel destination 172.30.25.33  
+
+
+EIGRP----------
+
+router eigrp 10 
+no auto-summary
+eigrp router-id 1.1.1.1
+network 192.168.100.0 0.0.0.255
+network 10.87.121.240 0.0.0.3
+network 10.10.10.0 0.0.0.3
+exit
+
+
+
+
+--------------------------
+
+
+
+ROUTER BORDE
+---------------------------
+
+ip route 0.0.0.0 0.0.0.0 172.30.25.18
+
+-----------
+// probando con nula 
+ip route 0.0.0.0 0.0.0.0 null 0 
+---------
+
+EIGRP ------------------
+router eigrp 10 
+no auto-summary
+network 10.87.121.240 0.0.0.3
+network 10.87.120.240 0.0.0.3
+exit
+
+
+redistribute ospf 10 subnets
+redistribuite static 
+
+
+router ospf 10
+redistribute eigrp 10 subnets
+
+---------------
+
+
+
+
+
+CORE TEG------------------
+
+TUNNEL --------------
+
+interface tunnel 20
+ip address 10.10.10.5 255.255.255.252
+tunnel source gig0/0
+tunnel destination 172.30.25.33 
+
+
+EIGRP---------------------
+
+router eigrp 10 
+no auto-summary
+eigrp router-id 2.2.2.2
+network 192.168.10.0 0.0.0.255
+network 10.87.120.240 0.0.0.3
+network 10.10.10.4 0.0.0.3
+exit
+----------------
+
+
+
+
+R_ISP
+--------------------------
+
+ip route 210.115.222.80 255.255.255.248 172.30.25.33
+
+------------
+
+
+
+
+ROUTER PROVEEDOR
+---------------------------
+
+ip route 0.0.0.0 0.0.0.0 172.30.25.34 
+
+-----------
+// probando con nula 
+ip route 0.0.0.0 0.0.0.0 null 0 
+---------
+
+
+TUNEL GRE
+----------------
+
+interface tunnel 10
+ip address 10.10.10.2 255.255.255.252
+tunnel source gig0/0
+tunnel destination 10.87.121.241
+exit
+
+interface tunnel 20
+ip address 10.10.10.6 255.255.255.252
+tunnel source gig0/0
+tunnel destination 10.87.120.241
+exit
+
+----
+// hasta este punto sin meter EIGRP
+el ping de core sps a proveedor funciona
+atraves del tunel
+-------
+
+EIGRP ------------------
+
+router eigrp 10 
+network 10.10.10.0 0.0.0.3
+network 10.10.10.4 0.0.0.3
+exit
+
+
+
+network 210.115.222.80 0.0.0.7
+
+
+
+
+
+
+
+
+
+
+EJERCICIO 2
+-----------------------------
+
+Router Norte
+----------------
+
+enable 
+conf t
+
+interface lo0
+ip address 1.1.1.1 255.255.255.255
+exit
+
+router ospf 1
+router-id 1.1.1.1 
+passive-interface gig0/1
+network 10.101.0.0 0.0.0.255 area 2
+network 10.110.110.8 0.0.0.3 area 2
+exit
+exit
+copy running-config startup-config 
+
+-----------------------
+CORE TGU
+-----------------------
+
+enable 
+conf t
+
+interface lo0
+ip address 2.2.2.2 255.255.255.255
+exit
+
+router ospf 1
+router-id 2.2.2.2 
+network 10.110.110.8 0.0.0.3 area 2
+network 10.110.110.12 0.0.0.3 area 3
+network 10.110.110.0 0.0.0.7 area 0
+exit
+exit
+copy running-config startup-config 
+
+------------------
+ROUTER SUR 
+-----------------
+enable 
+conf t
+
+interface lo0
+ip address 3.3.3.3 255.255.255.255
+exit
+
+router ospf 1
+router-id 3.3.3.3
+network 10.110.110.12 0.0.0.3 area 3
+network 10.102.0.0 0.0.0.255 area 3
+exit
+exit
+copy running-config startup-config 
+
+
+-------------------
+CORE CBA
+-------------------
+
+enable 
+conf t
+
+interface lo0
+ip address 4.4.4.4 255.255.255.255
+exit
+
+router ospf 1
+router-id 4.4.4.4
+network 10.110.110.0 0.0.0.7 area 0
+network 10.104.0.0 0.0.0.255 area 0
+exit
+exit
+copy running-config startup-config 
+
+---------------------
+CORE SPS
+---------------------
+
+enable 
+conf t
+
+interface lo0
+ip address 5.5.5.5 255.255.255.255
+exit
+
+router ospf 1
+router-id 5.5.5.5
+network 10.110.110.0 0.0.0.7 area 0
+network 10.110.110.16 0.0.0.3 area 1
+exit
+exit
+copy running-config startup-config 
+
+------------------------
+ROUTER CENTRO
+------------------------
+
+enable 
+conf t
+
+interface lo0
+ip address 6.6.6.6 255.255.255.255
+exit
+
+router ospf 1
+router-id 6.6.6.6
+network 10.110.110.16 0.0.0.3 area 1
+network 10.100.0.0 0.0.0.255 area 1
+exit
+exit
+copy running-config startup-config 
+
+
+
+
+
+
+-------------------
+Ejercicio 3
+
+ROUTER CLIENTE 1
+------------------
+
+enable
+conf t
+
+router bgp 65500
+neighbor 13.205.33.2 remote-as 321
+redistribute connected
+exit
+exit
+copy running-config startup-config 
+
+ipv6 route 2001:DB8:1:A002::/64 2001:DB8:1:A001::2
+ipv6 route 2001:DB8:1:3::/64 2001:DB8:1:A001::2
+ipv6 route 2001:DB8:1:4::/64 2001:DB8:1:A001::2
+ipv6 unicast-routing 
+exit
+copy running-config startup-config 
+
+----------------------
+NubeISP
+----------------------
+
+enable
+conf t
+
+router bgp 321
+neighbor 13.205.33.1 remote-as 65500
+redistribute connected
+neighbor 14.205.33.1 remote-as 100
+exit
+exit
+copy running-config startup-config 
+
+ipv6 route 2001:DB8:1:1::/64 2001:DB8:1:A001::1
+ipv6 route 2001:DB8:1:2::/64 2001:DB8:1:A001::1
+ipv6 route 2001:DB8:1:3::/64 2001:DB8:1:A002::1
+ipv6 route 2001:DB8:1:4::/64 2001:DB8:1:A002::1
+ipv6 unicast-routing 
+exit
+copy running-config startup-config 
+
+
+--------------------
+
+ROUTERCLIENTE2
+--------------------
+
+enable
+conf t
+
+router bgp 100
+redistribute connected
+neighbor 14.205.33.2 remote-as 321
+exit
+exit
+copy running-config startup-config 
+
+ipv6 route 2001:DB8:1:A001::/64 2001:DB8:1:A002::2
+ipv6 route 2001:DB8:1:1::/64 2001:DB8:1:A002::2
+ipv6 route 2001:DB8:1:2::/64 2001:DB8:1:A002::2
+ipv6 unicast-routing 
+exit
+copy running-config startup-config 

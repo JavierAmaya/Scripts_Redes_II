@@ -1,0 +1,4 @@
+Ing, en el archivo que dice Ejercicio1_eigrp.pkt , ahi logre hacer que me diera ping,
+nada mas que tuve que ponerle eigrp al isp, ahi si me funciono.
+Pero como ud me dijo que en el ISP no tenia que ir EIGRP , entonces estoy en duda.
+Por cualquier cosa ahi se lo mando.

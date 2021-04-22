@@ -1,0 +1,69 @@
+VTP 
+----------------
+Generalmente cuando tenemos 3 o cualquier cantidad de vlans y tenemos 4 o 5 
+switches que se relacionan, anteriormente , tendriamos que entrar a cada switch 
+a crear esas 3 vlans, entonces este protocolo viene a facilitar esta tarea.
+
+Existen 4 modos
+
+1. Server 
+Es el encargado de crear, modificar, o eliminar vlans
+
+2. Cliente
+Recibe los anuncios del server, y hace las modificaciones que le dice el server.
+
+3. Transparent
+Recibe las notificaciones , pero solo las pasa, no aplica ningun cambio en si mismo.
+
+4. Off
+No participa en los anuncios VTP y tampoco los reenviar, las vlans se configuran manualmente.
+
+
+Configuracion
+
+SW1
+------------------
+conf t
+vtp domain CISCO_PRESS
+vtp version 3
+vtp mode server
+vtp password CISCO
+exit
+vtp primary
+
+
+SW2
+-------------------
+conf t
+vtp version 3
+vtp domain CISCO
+vtp mode client 
+vtp password PASSWORD
+
+
+SW3
+-----------------
+conf t
+vtp version 3
+vtp domain CISCO
+vtp mode Transparent
+vtp password PASSWORD
+
+SW6
+--------------------
+conf t
+vtp version 3
+vtp domain CISCO
+vtp mode client
+vtp password PASSWORD
+
+
+verificacion -----------
+
+show vtp status
+
+
+------------------------
+
+DTP - Dynamic Truncking protocolo
+

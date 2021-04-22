@@ -1,0 +1,140 @@
+SW CORE 
+________________
+
+vlan database
+vlan 100 name LAN_NIVEL_I
+vlan 110 name LAN_NIVEL_II
+vlan 900 name MANAGEMENT
+vlan 998 name AISLADA
+vlan 999 name NATIVA
+exit
+
+vtp domain CISCO
+vtp version 2
+vtp mode transparent 
+vtp password PASSWORD
+
+interface vlan 100
+descrip LAN NIVEL I
+ip address 172.168.0.2 255.255.255.128
+exit
+
+interface vlan 110 
+descrip LAN NIVEL II 
+ip address 192.168.0.2 255.255.255.128
+exit
+
+--------
+Poner el Core en modo root Bridge
+
+conf t
+
+spannning-tree vlan 1,100,110,900,998-999 root primary
+
+
+SW DISTRIBUCION
+_________________________
+
+
+vlan database
+vlan 100 name LAN_NIVEL_I
+vlan 110 name LAN_NIVEL_II
+vlan 900 name MANAGEMENT
+vlan 998 name AISLADA
+vlan 999 name NATIVA
+
+vtp domain CISCO
+vtp version 2
+vtp mode server
+vtp password PASSWORD
+exit
+
+vtp primary
+
+interface vlan 100
+descrip LAN NIVEL I
+ip address 172.168.0.1 255.255.255.128
+exit
+
+interface vlan 110 
+descrip LAN NIVEL II 
+ip address 192.168.0.1 255.255.255.128
+exit
+
+
+Poner los puertos en modo TRUNK
+------
+
+interface gig1/0/3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 999
+switchport trunk allowed vlan 100,900,999
+exit
+
+interface gig1/0/4
+switchport trunk encapsulation dot1q
+switchport mode trunk 
+switchport trunk native vlan 999
+switchport trunk allowed vlan 100,110,900,999
+exit
+
+
+
+
+SW_NIVEL I 
+-----------------------
+
+vtp domain CISCO
+vtp version 2
+vtp mode client 
+vtp password PASSWORD
+
+--------
+despues de poner del SWDIST
+mode trunk hacia aca,
+de aqui para arriba se pone 
+mode dynamic auto u otro protocolo
+para que aprenda a hablar
+trunk 
+
+interface gig0/1
+switchport mode dynamic auto
+switchport trunk native vlan 999
+descrip CONEX SW DIST
+
+interface fa0/1
+switchport mode access
+switchport access vlan 100
+descrip CONEX PC NIVEL I
+exit 
+
+SW_NIVEL 1-2
+-----------------------
+
+vtp domain CISCO
+vtp version 2
+vtp mode client 
+vtp password PASSWORD
+
+interface gig0/2
+switchport mode dynamic auto
+switchport trunk vlan native 999
+descrip CONEX SW DIST
+exit
+
+interface fa0/1 
+switchport mode access
+switchport access vlan 100
+descrip PC LAN NIVEL I
+exit
+
+
+SW_NIVEL II
+-----------------------
+
+vtp domain CISCO
+vtp version 2
+vtp mode client 
+vtp password PASSWORD
+

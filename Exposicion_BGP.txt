@@ -1,0 +1,279 @@
+R_OLANCHO--------------------------------------
+enable 
+conf t
+
+hostname R_OLANCHO
+
+interface se0/1/0
+descrip hacia Norte Olancho
+ip address 20.20.20.1 255.255.255.252
+exit
+
+interface se0/1/1
+descrip hacia Norte Sur Olancho
+ip address 20.20.20.5 255.255.255.252
+exit
+
+interface se0/0/1
+descrip hacia Tegucigalpa
+ip address 10.10.10.5 255.255.255.252
+exit
+
+Loopback-------
+
+interface lo0
+ip address 5.5.5.1 255.255.255.255
+
+OSPF-------
+router ospf 1
+router-id 5.5.5.1 
+network 0.0.0.0 255.255.255.255 area 0
+
+BGP---------------------
+
+router bgp 65000
+neighbor 10.10.10.6 remote-as 65100
+
+redistribute ospf 1 
+
+router ospf 1
+redistribute bgp 65000 subnets
+
+
+
+
+
+R_OLANCHO_N--------------------------------------
+enable 
+conf t
+
+hostname R_OLANCHO_N
+
+interface se0/1/0
+descrip Hacia DIST_OLANCHO
+ip address 20.20.20.2 255.255.255.252
+exit
+
+interface gig0/0
+descrip LAN_NORTE_OLANCHO
+ip address 192.168.0.1 255.255.255.240
+exit
+
+Loopback-------
+
+interface lo0
+ip address 6.6.6.1 255.255.255.255
+exit
+
+
+OSPF-------
+router ospf 1
+router-id 6.6.6.1 
+passive-interface gig0/0
+network 0.0.0.0 255.255.255.255 area 0
+
+
+R_OLANCHO_S--------------------------------------
+enable 
+conf t
+
+hostname R_OLANCHO_S
+
+interface se0/1/1
+descrip Hacia DIST_OLANCHO
+ip address 20.20.20.6 255.255.255.252
+exit
+
+interface gig0/0
+descrip LAN_SUR_OLANCHO
+ip address 192.168.0.17 255.255.255.240
+exit
+
+Loopback-------
+
+interface lo0
+ip address 7.7.7.1 255.255.255.255
+
+OSPF-------
+router ospf 1
+router-id 7.7.7.1 
+passive-interface gig0/0
+network 0.0.0.0 255.255.255.255 area 0
+
+
+R_ISP--------------------------------------
+enable 
+conf t
+
+hostname R_ISP
+
+interface gig0/0
+descripcion LAN_ISP
+ip address 192.168.0.33 255.255.255.240
+exit
+
+
+
+R_TEG--------------------------------------
+enable 
+conf t
+
+hostname R_TEG
+
+interface se0/0/1
+descrip Hacia DIST_OLANCHO
+ip address 10.10.10.6 255.255.255.252
+exit
+
+interface gig0/0
+descrip LAN_TEG
+ip address 192.168.0.97 255.255.255.240
+exit
+
+interface se0/0/0
+descrip Hacia R_SPS
+ip address 10.10.10.9 255.255.255.252
+exit
+
+BGP---------------------
+
+router bgp 65100
+neighbor 10.10.10.5 remote-as 65000 
+
+redistribute connected
+
+neighbor 10.10.10.10 remote-as 65150
+redistribute connected
+
+R_SPS--------------------------------------
+enable 
+conf t
+
+hostname R_SPS
+
+interface se0/0/0
+descrip Hacia R_TEG
+ip address 10.10.10.10 255.255.255.252
+exit
+
+interface se0/0/1
+descrip Hacia R_LACEIBA
+ip address 10.10.10.14 255.255.255.252
+exit
+
+interface gig0/0
+descrip Hacia AGENCIA_CENTRO
+ip address 10.10.10.29 255.255.255.252
+exit
+ 
+interface gig0/1
+descrip Hacia AGENCIA_SUR
+ip address 10.10.10.33 255.255.255.252
+exit
+
+EIGRP---------------
+
+router eigrp 10
+network 10.10.10.28 0.0.0.3
+network 10.10.10.32 0.0.0.3
+
+
+BGP---------------------
+
+router bgp 65150
+neighbor 10.10.10.9 remote-as 65100 
+
+redistribute eigrp 10
+
+ip route 0.0.0.0 0.0.0.0 Null 0
+
+router eigrp 10
+redistribute static
+
+
+
+R_AG_CENTRO-------------------------------
+
+enable 
+conf t
+
+hostname R_AG_CENTRO
+
+interface gig0/0/0
+descrip Hacia RDIST_SPS
+ip address 10.10.10.30 255.255.255.252
+exit
+
+interface gig0/0/1
+descrip LAN_AGENCIA_CENTRO
+ip address 192.168.0.81 255.255.255.240
+exit
+
+EIGRP---------------
+
+router eigrp 10
+network 10.10.10.28 0.0.0.3
+network 192.168.0.80 0.0.0.15
+
+R_AG_SUR-------------------------------
+
+enable 
+conf t
+
+hostname R_AG_SUR
+
+interface gig0/0/0
+descri Hacia RDIST_SPS
+ip address 10.10.10.34 255.255.255.252
+exit
+
+interface gig0/0/1
+descrip LAN_AGENCIA_SUR
+ip address 192.168.0.65 255.255.255.240
+exit
+
+EIGRP---------------
+
+router eigrp 10
+network 10.10.10.32 0.0.0.3
+network 192.168.0.64 0.0.0.15
+
+
+
+
+
+
+R_LACEIBA--------------------------------------
+enable 
+conf t
+
+hostname R_LACEIBA
+
+
+interface se0/0/0
+descrip Hacia R_SPS
+ip address 10.10.10.13 255.255.255.252
+exit
+
+interface gig0/0
+descrip LAN_LACEIBA
+ip address 192.168.0.49 255.255.255.240
+exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

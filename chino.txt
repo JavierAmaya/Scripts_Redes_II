@@ -1,0 +1,20 @@
+ROUTER MIAMI----------------
+
+enable
+configure terminal 
+
+hostname R_MIAMI
+
+interface gig0/0
+ip address 190.168.20.1 255.255.255.224
+description LAN EDIFICIO 1 AREA ADMINISTRACION
+no shutdown 
+exit
+
+interface gig0/1
+ip address 190.168.20.33 255.255.255.224
+description LAN EDIFICIO 1 NIVEL 2 AREA LOGISTICA
+no shutdown 
+exit
+
+

@@ -1,0 +1,198 @@
+---------------------------------------------------------------
+LAAAURAAAAAA WAAAAAAWAAAAAAAAAAAAA
+-------------------------------------------------------------
+---------------------------------------------------------------
+LAAAURAAAAAA WAAAAAAWAAAAAAAAAAAAA
+-------------------------------------------------------------
+---------------------------------------------------------------
+LAAAURAAAAAA WAAAAAAWAAAAAAAAAAAAA
+-------------------------------------------------------------
+---------------------------------------------------------------
+LAAAURAAAAAA WAAAAAAWAAAAAAAAAAAAA
+-------------------------------------------------------------
+
+
+ESW 1
+------------------------
+hostname ESW1
+
+----------STP---------------
+spannning-tree vlan 11,12,13 root primary
+
+spanning-tree mode rapid-pvst
+
+
+-----------DTP--------------
+
+interface range fa0/1-2
+descrip HACIA_SW2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+interface range fa0/3-4
+descrip HACIA_SW3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+
+
+
+---------PortChannel--------------
+
+interface po20 
+descrip CONEXION SW2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+interface range fa0/1-2
+descrip Link fisico SW2
+shutdown
+channel-g 20 mode on 
+no shutdown
+exit
+
+interface po2 
+descrip CONEX SW3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+interface range fa0/3-4
+descrip Link fisico SW3
+shutdown
+channel-g 2 mode active 
+no shutdown
+exit
+
+
+
+
+
+
+ESW 2
+--------------------------
+hostname ESW2
+
+---------DTP--------------
+
+interface range fa0/1-2
+descrip HA SW1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+interface range fa0/3-4
+descrip HA SW3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+---------STP--------------
+
+spanning-tree vlan 21,22,23 root primary
+spanning-tree mode rapid-pvst
+
+
+
+---------PortChannel--------------
+
+interface po20
+descrip CONEX SW1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+interface range fa0/1-2
+descrip Link fisico SW1
+shutdown
+channel-g 20 mode on 
+no shutdown
+exit
+
+interface po2
+descrip CONEX SW3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+interface range fa0/3-4
+descrip Link fisico SW3
+shutdown
+channel-g 1 mode auto 
+no shutdown
+exit
+
+
+
+
+
+ESW 3
+--------------------------
+hostname ESW3
+
+
+---------DTP--------------
+interface range fa0/1-2
+descrip HA SW2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+interface range fa0/3-4
+descrip HA SW1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+---------STP--------------
+spanning-tree vlan 31,32,33 root primary
+spanning-tree mode rapid-pvst
+
+
+---------PortChannel--------------
+
+interface po2 
+descrip CONEX SW2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+interface range fa0/1-2
+descrip Link fisico SW1
+shutdown
+channel-g 2 mode passive 
+no shutdown
+exit
+
+interface po1 
+descrip CONEXION SW1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 11-13,21-23,31-33
+exit
+
+interface range fa0/3-4
+descrip Link fisico SW2
+shutdown
+channel-g 1 mode desirable 
+no shutdown
+exit
+
+
+---------------------------------------------------------------
+LAAAURAAAAAA WAAAAAAWAAAAAAAAAAAAA
+-------------------------------------------------------------

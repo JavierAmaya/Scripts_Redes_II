@@ -1,0 +1,79 @@
+
+CORE SPS
+----------------------
+
+EIGRP----------
+
+router eigrp 10 
+no auto-summary
+network 192.168.100.0 0.0.0.255
+network 10.10.10.0 0.0.0.3
+network 10.87.121.240 0.0.0.3
+
+
+
+TUNEL GRE
+----------------
+
+enable
+conf t
+
+interface tunnel 10
+ip address 10.10.10.1 255.255.255.252
+tunnel source gig0/0
+tunnel destination 172.30.25.33 
+
+
+
+CORE TEG
+-------------------
+EIGRP ------------------
+router eigrp 10 
+network 192.168.10.0 0.0.0.255
+network 10.87.120.240 0.0.0.3
+
+
+ROUTER BORDE
+---------------------------
+
+EIGRP ------------------
+router eigrp 10 
+no auto-summary
+network 10.87.121.240 0.0.0.3
+network 10.87.120.240 0.0.0.3
+network 172.30.25.16 0.0.0.3
+exit
+
+
+
+CORE TEG------------------
+
+
+router eigrp 10 
+no auto-summary
+network 192.168.10.0 0.0.0.255
+network 10.10.10.0 0.0.0.3
+exit
+
+
+
+ROUTER PROVEEDOR
+---------------------------
+
+EIGRP ------------------
+router eigrp 10 
+network 10.10.10.0 0.0.0.3
+network 210.115.222.80 0.0.0.7
+network 172.30.25.32 0.0.0.3
+exit
+
+TUNEL GRE
+----------------
+----TUNEL HACIA SPS
+enable
+conf t
+
+interface tunnel 10
+ip address 10.10.10.2 255.255.255.252
+tunnel source gig0/0
+tunnel destination 10.87.121.241

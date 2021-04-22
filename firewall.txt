@@ -1,0 +1,6 @@
+access-list inside_in permit ip 192.168.1.0 255.255.255.0 any
+access-list outside_in permit ip any any
+access-group inside_in in interface inside 
+access-group outside_in in interface outside 
+
+209.

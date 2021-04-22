@@ -1,0 +1,41 @@
+R1---------------
+
+enable
+conf t
+
+router bgp 65100
+neighbor 10.12.1.1 remote-as 65200 //cuando va hacia otro AS
+
+router bgp 65100
+redistribute connected
+
+
+R2-----------------
+
+router bgp 65200
+neighbor 10.12.1.2 remote-as 65100
+
+router bgp 65200
+redistribute connected 
+
+neighbor 10.23.1.1 remote-as 65300
+redistribute connected
+
+R3-----------------
+
+router bgp 65300 
+neighbor 10.23.1.2 remote-as 65200 // se pone la ip de llegada 
+redistribute connected
+
+
+
+------------------------
+Sumarizar atraves de una ruta estatica
+
+no redistribute connected 
+ip route 172.16.0.0 255.255.0.0 null 0
+route bgp AS
+redistribute static
+
+
+

@@ -1,0 +1,79 @@
+Configurar en el router las 
+vlan capa 2 y 3
+y en el switch los capa 2
+y capa 3 solo la vlan 99
+
+
+SW 1
+---------
+hostname SW-1
+
+Capa 2
+----------
+vlan database 
+vlan 10 name RED_VENTAS
+vlan 20 name RED_COBROS
+vlan 99 name MANAGEMENT
+vlan 100 name NATIVA
+vlan 110 name LIBRE
+
+interface fa0/1 
+switchport mode access 
+switchport access vlan 20
+description CONEX_LAPTOP_REDCOBROs
+exit
+
+interface fa0/2
+switchport mode access 
+switchport access vlan 10
+description CONEX_LAP_1_REDVENTAS
+exit
+
+interface fa0/3
+switchport mode access 
+switchport access vlan 10
+description CONEX_LAP_2_REDVENTAS
+exit
+
+Capa 3
+--------
+interface vlan 99 
+description MANGAGEMENT
+ip address 192.168.100.10 255.255.255.0
+exit
+
+ip default-gateway 192.168.100.1
+
+----------
+Poner el puerto 
+del router en modo trunk (no me funciono)
+----------
+interface fa0/24
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 100
+switchport trunk allowed vlan 100,110,20,10,99 
+
+
+Router
+----------
+
+interface gig0/0.20
+encapsulation dot1q 20
+ip address 192.168.20.1 255.255.255.0
+description COBROS
+exit
+
+interface gig0/0.10 
+encapsulation dot1q 10
+ip address 192.168.10.1 255.255.255.0
+description VENTAS
+exit
+
+interface gig0/0.100 
+encapsulation dot1q 100
+description NATIVA
+exit
+
+agregar la 99 de MANAGEMENT
+LA encapsulation debe coincidir con el id de la vlan 

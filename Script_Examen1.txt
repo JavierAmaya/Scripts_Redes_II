@@ -1,0 +1,262 @@
+Router Agencia
+----------
+interface gig0/0
+ip address 192.168.0.1 255.255.255.224
+exit
+
+interface gig0/1
+ip address 10.0.0.1 255.255.255.252
+exit
+
+Ruta por defecto
+----------------
+ip route 0.0.0.0 0.0.0.0 gig0/1
+
+Router ISP
+----------------
+
+interface gig0/1
+ip address 10.0.0.2 255.255.255.252
+exit
+
+interface gig0/0
+ip address 10.0.1.1 255.255.255.252
+exit
+
+Ruta Estatica
+-------------------------
+Hacia RED AGENCIA
+ip route 192.168.0.0 255.255.255.224 gig0/1
+
+Hacia Router Border a travez de la null
+
+ip route 192.168.0.0 255.255.0.0 gig0/0
+
+Loopback----------------
+
+interface Loopback 100
+ip address 0.0.0.1 255.255.255.255
+
+
+Router Borde
+---------------------
+
+interface gig0/0
+ip address 10.0.1.2 255.255.255.252
+exit
+
+interface gig0/2
+ip address 192.168.1.1 255.255.255.128
+exit
+
+interface gig0/1
+ip address 10.0.2.1 255.255.255.252
+exit
+
+Rutas Estaticas
+-----------------------------
+
+Ruta por defecto
+--------
+
+interface gig0/0
+-----
+ip route dhcp *** no me funciono 
+
+ip route 0.0.0.0 0.0.0.0 10.0.1.2
+router eigrp 10
+redistribute static 
+
+Ruta null
+---------------------
+ip route 192.168.0.0 255.255.0.0 null 0
+router eigrp 10
+redistribute static 
+
+
+EIGRP---------------
+
+router eigrp 10
+network 192.168.1.0 0.0.0.127 
+network 10.0.1.0 0.0.0.3
+network 10.0.2.0 0.0.0.3
+
+
+
+Router Core
+---------------------
+interface gig0/1
+ip address 10.0.2.2 255.255.255.252
+exit
+
+interface gig0/2
+ip address 192.168.2.1 255.255.255.128
+exit
+
+interface gig0/0
+ip address 10.0.3.1 255.255.255.252
+exit
+
+
+Subinterfaces para las vlans
+-------------------
+
+interface gig0/0.20
+encapsulation dot1q 20
+ip address 192.168.20.1 255.255.255.0
+description COBROS
+exit
+
+interface gig0/0.10 
+encapsulation dot1q 10
+ip address 192.168.10.1 255.255.255.0
+description VENTAS
+exit
+
+EIGRP---------------
+
+router eigrp 10
+network 192.168.2.0 0.0.0.127 
+network 10.0.2.0 0.0.0.3
+network 10.0.3.0 0.0.0.3
+
+
+SW-DIST
+--------------------------
+
+VTP-------------------
+
+vtp domain REDES2
+vtp version 2
+vtp mode server
+vtp password REDES2
+exit
+
+
+VLANS
+-----------
+
+vlan database
+vlan 10  name COBROS
+vlan 20  name VENTAS
+vlan 100 name  MANAGEMENT
+vlan 998 name  NATIVA
+vlan 999 name  LIBRE
+exit
+
+interface vlan 10
+descrip LAN_COBROS
+ip address 192.168.20.1 255.255.255.192
+exit
+
+interface vlan 20
+descrip LAN_VENTAs
+ip address 192.168.10.1 255.255.255.192
+exit
+
+
+interface vlan 100
+descrip MANAGEMENT
+ip address 192.168.40.1 255.255.255.0
+exit
+
+
+ip default-gateway 10.0.3.1
+----------
+Hacia Router Core (no me funciono)
+
+interface gig1/0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk native vlan 998
+switchport trunk allowed vlan 10,20,100,998,999
+
+
+
+
+
+EIGRP ---------------------
+
+
+router eigrp 10
+network 10.0.3.0 0.0.0.3
+network 192.168.10.0 0.0.0.63 
+network 192.168.20.0 0.0.0.63 
+
+
+DTP-----------------------
+
+interface gi1/0/2
+description CONEXION SW COBROS
+switchport trunk encapsulation dot1q 
+switchport mode trunk
+switchport trunk native vlan 998
+switchport trunk allowed vlan 10,100,998
+exit
+
+interface gi1/0/3
+description CONEXION SW VENTAS
+switchport trunk encapsulation dot1q 
+switchport mode trunk
+switchport trunk native vlan 998
+switchport trunk allowed vlan 20,100,998
+exit
+
+
+SW-COBROS
+-------------------------
+VTP----------------
+
+vtp domain REDES2
+vtp version 2
+vtp mode client
+vtp password REDES2
+exit
+
+DTP------------------
+
+interface gi0/1
+description CONEXION SW DIST
+switchport mode dynamic auto
+switchport trunk native vlan 998
+exit
+
+interface fa0/1
+switchport mode access
+switchport access vlan 10
+exit
+
+interface vlan 100
+descrip MANAGEMENT
+ip address 192.168.40.1 255.255.255.0
+exit
+
+
+
+
+SW-VENTAS
+----- --------------------
+vtp domain REDES2
+vtp version 2
+vtp mode client
+vtp password REDES2
+exit
+
+DTP------------------
+
+interface gi0/1
+description CONEXION SW DIST
+switchport mode dynamic desirable
+switchport trunk native vlan 998
+exit
+
+interface fa0/1
+switchport mode access
+switchport access vlan 20
+exit
+
+interface vlan 100
+descrip MANAGEMENT
+ip address 192.168.40.1 255.255.255.0
+exit
+

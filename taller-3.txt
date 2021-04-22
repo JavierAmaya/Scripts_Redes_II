@@ -1,0 +1,503 @@
+_____________________________________________
+Router Praga
+_____________________________________________
+
+enable
+conf t
+
+hostname R_PRAGA
+
+interface se0/0/0
+descrip hacia Oslo
+ip address 106.48.0.1 255.240.0.0 
+no shut
+exit
+
+interface se0/0/1
+descrip hacia Talin
+ip address 106.32.0.1 255.240.0.0 
+no shut
+exit
+
+interface se0/1/0
+descrip hacia Malmo
+ip address 106.16.0.1 255.240.0.0 
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Lyon
+ip address 106.0.0.1 255.240.0.0
+no shut
+exit
+
+interface gig0/0
+descrip LAN_PRAGA
+ip address 106.64.0.1 255.240.0.0
+no shut
+exit
+
+
+RIP-----------------
+router rip 
+version 2
+network 106.48.0.0
+network 106.32.0.0
+network 106.16.0.0
+network 106.0.0.0
+network 106.64.0.0  
+exit
+
+IPV6-----------------------
+
+
+interface se0/0/0
+descrip hacia Oslo
+ipv6 address 2001:106:97:180::1/57
+no shut
+exit
+
+interface se0/0/1
+descrip hacia Talin
+ipv6 address 2001:106:97:100::1/57
+no shut
+exit
+
+interface se0/1/0
+descrip hacia Malmo
+ipv6 address 2001:106:97:80::1/57
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Lyon
+ipv6 address 2001:106:97::1/57
+no shut
+exit
+
+interface gig0/0
+descrip LAN_PRAGA
+ipv6 address 2001:106:97:200::1/57
+no shut
+exit
+
+
+
+RIPng--------------
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/0/0
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/0/1
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/1/0
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/1/1
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface gig0/0
+ipv6 rip ACME enable
+exit
+
+
+
+
+
+
+_____________________________________________
+Router Oslo
+_____________________________________________
+
+enable
+conf t
+
+hostname R_OSLO
+
+interface se0/0/0
+descrip hacia Praga
+ip address 106.48.0.2 255.240.0.0
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Talin
+ip address 106.80.0.1 255.240.0.0
+no shut
+exit
+
+
+interface gig0/0
+descrip LAN_OSLO
+ip address 106.96.0.1 255.240.0.0
+no shut
+exit
+
+RIP-----------------
+router rip 
+version 2
+network 106.48.0.0
+network 106.80.0.0
+network 106.96.0.0
+exit
+
+
+IPV6------------------
+
+interface se0/0/0
+descrip hacia Praga
+ipv6 address 2001:106:97:180::2/57
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Talin
+ipv6 address 2001:106:97:280::1/57
+no shut
+exit
+
+interface gig0/0
+descrip LAN_OSLO
+ipv6 address 2001:106:97:300::1/57
+no shut
+exit
+
+
+RIPng ----------------
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/0/0
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/1/1
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface gig0/0
+ipv6 rip ACME enable
+exit
+
+
+
+_____________________________________________
+Router Talin
+_____________________________________________
+
+enable
+conf t
+
+hostname R_TALIN
+
+interface se0/0/0
+descrip hacia Malmo
+ip address 106.128.0.1 255.240.0.0
+no shut
+exit
+
+interface se0/1/0
+descrip hacia Lyon
+ip address 106.112.0.1 255.240.0.0
+no shut
+exit
+
+interface se0/0/1   
+descrip hacia Praga
+ip address 106.32.0.2 255.240.0.0
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Oslo
+ip address 106.80.0.2 255.240.0.0
+no shut
+exit
+
+interface gig0/0
+ip address 106.144.0.1 255.240.0.0
+no shut
+exit
+
+RIP-----------------
+router rip 
+version 2
+network 106.128.0.0
+network 106.112.0.0
+network 106.32.0.0
+network 106.80.0.0
+network 106.144.0.0
+exit
+
+
+IPV6--------------------
+
+interface se0/0/0
+descrip hacia Malmo
+ipv6 address 2001:106:97:400::1/57
+no shut
+exit
+
+interface se0/1/0
+descrip hacia Lyon
+ipv6 address 2001:106:97:380::1/57
+no shut
+exit
+
+interface se0/0/1
+descrip hacia Praga
+ipv6 address 2001:106:97:100::2/57
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Oslo
+ipv6 address 2001:106:97:280::2/57
+no shut
+exit
+
+interface gig0/0
+ipv6 address 2001:106:97:480::1/57
+no shut
+exit
+
+RIPng----------------------
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/0/0
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/1/0
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/0/1
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/1/1
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface gig0/0
+ipv6 rip ACME enable
+exit
+
+
+
+_____________________________________________
+Router Lyon
+_____________________________________________
+enable
+conf t
+
+hostname R_LYON
+
+interface se0/0/1
+descrip hacia Malmo
+ip address 106.160.0.1 255.240.0.0
+no shut
+exit
+
+interface se0/1/0
+descrip hacia Talin
+ip address 106.112.0.2 255.240.0.0
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Praga
+ip address 106.0.0.2 255.240.0.0
+no shut
+exit
+
+interface gig0/0
+ip address 106.192.0.1 255.240.0.0
+no shut
+exit
+
+
+RIP-----------------
+router rip 
+version 2
+network 106.160.0.0
+network 106.112.0.0
+network 106.0.0.0
+network 106.192.0.0
+exit
+
+
+IPV6--------------
+
+interface se0/0/1
+descrip hacia Malmo
+ipv6 address 2001:106:97:500::1/57
+no shut
+exit
+
+interface se0/1/0
+descrip hacia Talin
+ipv6 address 2001:106:97:380::2/57
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Praga
+ipv6 address 2001:106:97::2/57
+no shut
+exit
+
+interface gig0/0
+ipv6 address 2001:106:97:600::1/57
+no shut
+exit
+
+RIPng----------
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/0/1
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/1/0
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/1/1
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface gig0/0
+ipv6 rip ACME enable
+exit
+
+
+
+_____________________________________________
+Router Malmo
+_____________________________________________
+enable
+conf t
+
+hostname R_MALMO
+
+
+interface se0/0/0
+descrip hacia Talin
+ip address 106.128.0.2 255.240.0.0
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Praga
+ip address 106.16.0.2 255.240.0.0 
+no shut
+exit
+
+interface se0/0/1
+descrip hacia Lyon
+ip address 106.160.0.2 255.240.0.0
+no shut
+exit
+
+interface gig0/0
+ip address 106.176.0.1 255.240.0.0
+no shut
+exit
+
+RIP-----------------
+router rip 
+version 2
+network 106.128.0.0
+network 106.16.0.0
+network 106.160.0.0
+network 106.176.0.0
+exit
+
+
+IPV6-----------------------
+
+interface se0/0/0
+descrip hacia Talin
+ipv6 address 2001:106:97:400::2/57
+no shut
+exit
+
+interface se0/1/1
+descrip hacia Praga
+ipv6 address 2001:106:97:80::2/57
+no shut
+exit
+
+interface se0/0/1
+descrip hacia Lyon
+ipv6 address 2001:106:97:500::2/57
+no shut
+exit
+
+interface gig0/0
+ipv6 address 2001:106:97:580::1/57
+no shut
+exit
+
+RIPng------------------
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/0/0
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/1/1
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface se0/0/1
+ipv6 rip ACME enable
+exit
+
+ipv6 unicast-routing
+ipv6 router rip ACME
+interface gig0/0
+ipv6 rip ACME enable
+exit

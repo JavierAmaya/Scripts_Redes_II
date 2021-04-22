@@ -1,0 +1,51 @@
+Modificar el costo de un puerto STP
+------------
+SW 
+-----
+conf t
+interface gig0/0 
+spanning-tree cost 1
+
+
+-------
+Ver la conf¡guracion de la VLAN
+
+show spanning-tree vlan 1
+
+------
+
+Cambiando la prioridad del puerto
+
+conf t
+interface gig0/0
+spanning-tree port-priority 6
+---------
+
+Verificar que el costo Cambio
+
+show spanning-tree vlan 1
+
+-------
+
+MST (multi spanning tree)
+
+Sirve para agrupar vlans en regiones, y definir
+que switch va a ser el root
+
+Conf t
+spanning-tree mode mst
+spanning-tree mst 0 root primary
+spanning-tree mst 1 root primary
+spanning-tree mst 2 root primary
+spanning-tree mst configuration
+name ENTERPRAISE_CORE
+revision 2
+instance 1 vlan 10,20
+instance 2 vlan 99
+
+------
+Verificar la configuracion MST
+
+show spanning-tree mst configuration
+
+

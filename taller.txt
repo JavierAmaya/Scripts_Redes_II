@@ -1,0 +1,150 @@
+Router Santiago
+--------------
+
+Hostname Santiago
+
+interface se0/0/0 
+ip address 10.10.10.1 255.255.255.252
+no shutdown
+exit
+
+interface se0/0/1
+ip address 20.20.20.1 255.255.255.252
+no shutdown
+exit
+
+interface se0/1/0
+ip address 30.30.30.1 255.255.255.252
+no shutdown 
+exit
+
+interface gig0/0
+ip address 172.21.0.1 255.255.255.248
+no shutdown
+exit
+
+-------- PCs
+PC0 
+172.21.0.2 255.255.255.255.248
+gateway 172.21.0.1
+
+PC1
+172.21.0.3 255.255.255.255.248
+gateway 172.21.0.1
+
+PC2 
+172.21.0.4 255.255.255.248
+gateway 172.21.0.1
+-----------------------------------------------
+
+Router Serena
+
+Hostname Serena
+
+interface se0/0/0 
+ip address 10.10.10.2 255.255.255.252
+no shutdown
+exit
+
+interface gig0/0
+ip address 172.21.0.9 255.255.255.248
+no shutdown
+exit
+
+--------PCs
+
+PC3 
+172.21.0.10 255.255.255.255.248
+gateway 172.21.0.9
+
+PC4
+172.21.0.11 255.255.255.255.248
+gateway 172.21.0.9
+
+PC5 
+172.21.0.12 255.255.255.248
+gateway 172.21.0.9
+
+
+--------------------------------------------
+
+Router Valdivia
+
+Hostaname Valdivia
+
+interface se0/0/0 
+ip address 20.20.20.2 255.255.255.252
+no shutdown
+exit
+
+interface gig0/0
+ip address 172.21.0.17 255.255.255.248
+no shutdown
+exit
+
+--------PCs
+
+PC6 
+172.21.0.18 255.255.255.255.248
+gateway 172.21.0.17
+
+PC7
+172.21.0.19 255.255.255.255.248
+gateway 172.21.0.17
+
+PC8 
+172.21.0.20 255.255.255.248
+gateway 172.21.0.17
+
+
+--------------------------------------------
+Router ISP
+
+hostname ISP
+interface se0/0/0
+no shutdown
+ip address 30.30.30.2 255.255.255.252
+exit
+
+
+
+-------------------------------------------
+
+Enrutamiento RIP
+
+
+Router Santiago 
+--------
+
+router rip 
+version 2
+network 172.21.0.0
+network 10.10.10.0
+network 20.20.20.0
+network 30.30.30.0
+exit
+
+Router Serena
+-------------
+router rip 
+version 2
+network 172.21.0.8
+network 10.10.10.0
+exit
+
+Router Valdivia 
+-------------
+router rip
+version 2
+network 172.21.0.16
+network 20.20.20.0 
+exit
+
+Router ISP
+------------
+router rip
+version 2
+network 30.30.30.0 
+exit
+
+

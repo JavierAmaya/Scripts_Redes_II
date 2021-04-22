@@ -1,0 +1,45 @@
+R1-----------------
+
+conf t
+router eigrp 100
+network red_conectada_1 wild card 
+network red_conectada_2 wild card 
+
+ruta por defecto------
+
+interface fa0/0
+ip address dhcp 
+
+
+---- Ahora hay que inyectarla en el proceso eigrp como ruta externa del eigrp
+
+router eigrp 100
+redistribute static 
+
+
+
+
+
+R3
+---------------------
+
+Configuraciones normales en las interfaces ......
+
+router eigrp 100
+network red_conectada_1 wild card 
+network red_conectada_2 wild card 
+network red_conectada_3 wild card 
+
+
+R2-----------------
+
+Configuraciones normales en las interfaces ......
+
+router eigrp 100
+network red_conectada_1 wild card 
+network red_conectada_2 wild card 
+network red_conectada_3 wild card 
+
+
+show ip route
+show run 

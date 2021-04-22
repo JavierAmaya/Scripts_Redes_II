@@ -1,0 +1,55 @@
+EJERCICIO 2
+-----------------------------
+
+Router Norte
+----------------
+
+router ospf 1
+network 10.101.0.0 0.0.0.255 area 2
+network 10.110.110.8 0.0.0.3 area 2
+exit
+-----------------------
+CORE TGU
+-----------------------
+
+router ospf 1
+network 10.110.110.8 0.0.0.3 area 2
+network 10.110.110.12 0.0.0.3 area 3
+network 10.110.110.0 0.0.0.7 area 0
+exit
+
+------------------
+ROUTER SUR 
+----------------
+
+router ospf 1
+network 10.110.110.12 0.0.0.3 area 3
+network 10.102.0.0 0.0.0.255 area 3
+exit
+
+-------------------
+CORE CBA
+-------------------
+
+router ospf 1
+network 10.110.110.0 0.0.0.7 area 0
+network 10.104.0.0 0.0.0.255 area 0
+exit
+
+
+---------------------
+CORE SPS
+---------------------
+
+router ospf 1
+network 10.110.110.0 0.0.0.7 area 0
+network 10.110.110.16 0.0.0.3 area 1
+exit
+
+------------------------
+ROUTER CENTRO
+------------------------
+router ospf 1
+network 10.110.110.16 0.0.0.3 area 1
+network 10.100.0.0 0.0.0.255 area 1
+exit

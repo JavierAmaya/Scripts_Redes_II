@@ -1,0 +1,17 @@
+ssh x.x.x.x x.x.x.x inside 
+ssh version 2 
+username XXXXX password XXXXX
+aaa authentication ssh console LOCAL
+show run ssh 
+
+
+SSH--------
+
+username USER1 password PASSWORD
+crypto key generate rsa modulus 1024 
+ssh 192.168.1.2 255.255.255.0 inside
+
+
+
+-------------------------------------
+

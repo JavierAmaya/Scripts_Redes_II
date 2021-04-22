@@ -1,0 +1,6 @@
+https://us-api.asm.skype.com/v1/objects/0-eus-d7-6734feb5e2cae1c0b8325e05e867abd6/views/video
+https://us-api.asm.skype.com/v1/objects/0-eus-d9-1888624125ff090effe7a2b0e7f902f0/views/video
+https://us-api.asm.skype.com/v1/objects/0-eus-d9-73ed41b045306802aaf78882e1ef9cef/views/video
+https://us-api.asm.skype.com/v1/objects/0-eus-d11-9cb8cbe1c08ba26b067dc44b364cc57f/views/video
+https://us-api.asm.skype.com/v1/objects/0-eus-d20-7394e3bedee31fd4d2165dc8b4b80e94/views/video
+https://us-api.asm.skype.com/v1/objects/0-eus-d7-ccb361e32abe7c0648f8898d23fc3662/views/video

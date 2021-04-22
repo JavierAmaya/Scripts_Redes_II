@@ -1,0 +1,89 @@
+ACL EXTENDIDA 
+Lo mas cerca posible del origen
+
+ACL Standar
+Lo mas cerca posible del destino
+
+------
+Verificar si un servidor http funciona
+- telnet x.x.x.x portnumber
+
+-------
+
+ACL EXTENDIDA
+------------------------------------------------
+enable
+conf t 
+
+access-list 100 remark DENEGAR TRAFICO HTTP PC3
+access-list 100 deny tcp host 192.168.1.10 172.16.2.0 0.0.0.255 eq 80  
+access-list 100 deny tcp host 192.168.1.10 172.16.2.0 0.0.0.255 eq 443  
+access-list 100 permit ip 192.168.2.0 0.0.0.255 any 
+exit
+
+conf t
+interface gi0/0
+ip access-group 100 out 
+
+
+NAT ESTATICO---------------------
+
+enable
+conf t
+
+interface gig0/0
+ip address x.x.x.x x.x.x.x
+ip nat inside
+exit
+
+interface serial 0/0
+ip address x.x.x.x x.x.x.x
+ip nat outside
+exit
+
+ip nat inside source static x.x.x.x (source) x.x.x.x (traduction global)
+
+----- show ip nat traslation 
+------- clear ip nat traslation *
+
+--------------- NAT DINAMICO
+
+interface gig0/0
+ip address x.x.x.x x.x.x.x
+ip nat inside
+exit
+
+interface serial 0/0
+ip address x.x.x.x x.x.x.x
+ip nat outside
+exit
+
+ip nat pool victor 200.1.1.1 200.1.1.2 netmask 255.255.255.252
+ip nat inside source list 1 pool fred overload 
+
+access-list 1 permit 10.1.1.2
+access-list 1 permit 10.1.1.1
+
+
+-------------------------SOBRECARGA DE NAT
+
+interface gig0/0
+ip address x.x.x.x x.x.x.x
+ip nat inside
+exit
+
+interface serial 0/0
+ip address x.x.x.x x.x.x.x
+ip nat outside
+exit
+
+ip nat pool victor 200.1.1.1 200.1.1.2 netmask 255.255.255.252
+ip nat inside source list 1 pool fred overload 
+
+access-list 1 permit 10.1.1.2
+access-list 1 permit 10.1.1.1
+
+
+---- en el caso de tener una sola ip 
+ip nat inside source list acl-number interface serial 0/0 overload 
+

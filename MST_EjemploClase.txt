@@ -1,0 +1,59 @@
+SWDIST-1
+
+conf t
+spanning-tree mode mst
+spanning-tree mst 0 root primary
+spanning-tree mst 1 root primary
+spanning-tree mst 2 root Secundary
+spanning-tree mst configuration
+name ENTERPRAISE
+revision 2
+---
+
+Ahora crear las instancias
+
+instance 1 vlan 10,20
+instance 2 vlan 30
+exit
+exit
+
+------------------------------
+SWDIST-2
+
+conf t
+spanning-tree mode mst
+spanning-tree mst 0 root secondary
+spanning-tree mst 1 root secondary
+spanning-tree mst 2 root primary
+spanning-tree mst configuration
+name ENTERPRAISE
+revision 2
+---
+
+Ahora crear las instancias
+
+instance 1 vlan 10,20
+instance 2 vlan 30
+exit
+exit
+
+------------------------------
+SWACCESS-1
+
+conf t
+spanning-tree mode mst
+spanning-tree mst configuration
+name ENTERPRAISE
+instance 1 vlan 10,20
+instance 2 vlan 30
+
+
+-----------------------------
+SWACCESS-2
+
+conf t
+spanning-tree mode mst
+spanning-tree mst configuration
+name ENTERPRAISE
+instance 1 vlan 10,20
+instance 2 vlan 30
