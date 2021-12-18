@@ -87,3 +87,56 @@ access-list 1 permit 10.1.1.1
 ---- en el caso de tener una sola ip 
 ip nat inside source list acl-number interface serial 0/0 overload 
 
+VRRP -----------
+
+enable
+conf t
+
+R2-------
+interface gig0/0 
+ip address x.x.x.x x.x.x.x
+vrrp 20 ip 172.16.20.1 
+
+R3-------------
+
+interface gig0/0 
+ip address x.x.x.x x.x.x.x
+vrrp 20 ip 172.16.20.1
+
+GLBP ------------
+
+R2------------------
+
+interface vlan 30
+ip address x.x.x.2 x.x.x.x
+glbp 30 ip 172.16.30.1 
+glbp 30 preempt
+
+R3------------------
+
+interface vlan 30
+ip address x.x.x.3 x.x.x.x
+glbp 30 ip 172.16.30.1 
+glbp 30 preempt
+
+
+
+Standby----------------------
+
+SW1--------------------
+
+conf 
+interface gi0/0
+Standby 100 ip 172.16.31.1 
+Standby 100 preempt
+standby 100 priority 120
+
+
+SW2--------------------
+
+conf 
+interface gi0/0
+Standby 100 ip 172.16.31.1 
+Standby 100 preempt
+
+

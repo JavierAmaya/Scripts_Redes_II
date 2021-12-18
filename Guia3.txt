@@ -1,0 +1,291 @@
+ROUTER NAT--------
+
+enable
+conf t
+
+interface gig0/0
+ip address 172.20.20.1 255.255.255.0
+description RED DMZ 
+no shut
+exit
+
+interface gig0/1
+ip address 192.168.100.1 255.255.255.248
+description HACIA SWITCH ACCESO3 
+no shut
+exit
+
+SW_CORE1------------------------
+
+interface fa0/1
+no switchport
+ip address 192.168.200.2 255.255.255.0
+description LAN NOC
+exit
+
+SW-CORE2----------------
+
+interface fa0/3
+no switchport
+ip address 192.168.201.3 255.255.255.0
+description LAN RED IT
+exit
+
+SW_ACCESO3--------------
+
+enable
+conf t
+
+access-list 120 permit tcp host 192.168.200.10 host 192.168.0.10 eq 80 
+
+access-list 110 remark PERMITIR TRAFICO A SERVERS
+
+
+access-list 110 permit tcp host 192.168.200.10 192.168.0.0 0.0.1.255 eq 80  
+access-list 110 permit tcp host 192.168.200.20 192.168.0.0 0.0.1.255 eq 80  
+access-list 110 permit tcp host 192.168.200.10 192.168.0.0 0.0.1.255 eq 53  
+access-list 110 permit tcp host 192.168.200.20 192.168.0.0 0.0.1.255 eq 53  
+access-list 110 permit tcp host 192.168.200.10 192.168.0.0 0.0.1.255 eq 1633  
+access-list 110 permit tcp host 192.168.200.20 192.168.0.0 0.0.1.255 eq 1633  
+access-list 110 permit tcp host 192.168.200.10 192.168.0.0 0.0.1.255 eq 8443  
+access-list 110 permit tcp host 192.168.200.20 192.168.0.0 0.0.1.255 eq 8443  
+access-list 110 permit tcp host 192.168.200.10 192.168.0.0 0.0.1.255 eq 445  
+access-list 110 permit tcp host 192.168.200.20 192.168.0.0 0.0.1.255 eq 445  
+access-list 110 permit tcp host 192.168.200.10 192.168.0.0 0.0.1.255 eq 21  
+access-list 110 permit tcp host 192.168.200.20 192.168.0.0 0.0.1.255 eq 21  
+access-list 110 permit tcp 192.168.201.0 0.0.0.255 192.168.0.0 0.0.1.255 eq 80
+access-list 110 permit tcp 192.168.201.0 0.0.0.255 192.168.0.0 0.0.1.255 eq 53
+access-list 110 permit tcp 192.168.201.0 0.0.0.255 192.168.0.0 0.0.1.255 eq 1633
+access-list 110 permit tcp 192.168.201.0 0.0.0.255 192.168.0.0 0.0.1.255 eq 8443
+access-list 110 permit tcp 192.168.201.0 0.0.0.255 192.168.0.0 0.0.1.255 eq 445
+access-list 110 permit tcp 192.168.201.0 0.0.0.255 192.168.0.0 0.0.1.255 eq 21
+access-list 110 deny ip any any
+
+
+conf t
+interface fa0/4
+ip access-group 110 out 
+
+access-list 120 remark PERMITIR SOLO PING A DMZ
+access-list 120 permit icmp any host 172.20.20.20 
+
+interface fa0/4
+ip access-group 120 out 
+
+
+
+
+
+REDUNDACIA -------------------------------
+
+SW-ACCESO1-----------------
+
+enable
+conf t
+host SW-ACCESO1
+vlan 10
+vlan 20
+
+interface fa0/1 
+description VA HACIA SW_CORE1
+switchport mode trunk
+switchport trunk allowed vlan 10,20
+exit
+
+interface fa0/2
+description VA HACIA SW_CORE2
+switchport mode trunk
+switchport trunk allowed vlan 10,20
+exit
+
+interface fa0/3
+description HACIA PC.10
+switchport mode access 
+switchport access vlan 10
+exit
+
+interface fa0/4
+description HACIA PC.20
+switchport mode access 
+switchport access vlan 10
+exit
+
+
+SW-ACCESO2-----------------
+
+enable
+conf t
+host SW-ACCESO1
+vlan 10
+vlan 20
+
+interface fa0/1 
+description VA HACIA SW_CORE1
+switchport mode trunk
+switchport trunk allowed vlan 10,20
+exit
+
+interface fa0/2
+description VA HACIA SW_CORE2
+switchport mode trunk
+switchport trunk allowed vlan 10,20
+exit
+
+interface fa0/3
+description HACIA PC.10
+switchport mode access 
+switchport access vlan 10
+exit
+
+interface fa0/4
+description HACIA PC.20
+switchport mode access 
+switchport access vlan 20
+exit
+
+
+SW-CORE1--------------------
+
+conf t
+host SW-CORE1
+vlan 10
+exit
+vlan 20
+exit
+
+
+interface vlan10
+ip address 192.168.200.2 255.255.255.0
+exit
+
+interface vlan20
+ip address 192.168.201.2 255.255.255.0
+exit
+
+interface fa0/1
+description VA HACIA SW-ACCESO1
+switchport trunk encapsulation dot1q
+switchport mode trunk 
+exit
+
+interface fa0/2
+description VA HACIA SW-ACCESO2
+switchport trunk encapsulation dot1q
+switchport mode trunk 
+exit
+
+interface fa0/3
+description VA HACIA SW-CORE2
+switchport trunk encapsulation dot1q
+switchport mode trunk 
+exit
+
+interface fa0/4
+description VA HACIA SW-BORDE
+no switchport
+ip address 192.168.100.2 255.255.255.248 
+ip access-group 110 out 
+exit
+
+CONFIGURACIONES STANDBY-----------
+
+inter vl10
+standby 10 ip 192.168.200.1
+standby 10 preempt
+exit
+
+inter vl20
+standby 20 ip 192.168.201.1
+standby 20 preempt
+exit
+
+inter fa0/4
+standby 110 ip 192.168.100.1
+standby 110 preempt
+exit
+
+ip route 0.0.0.0 0.0.0.0 192.168.100.4
+
+ACCESS LIST -------
+
+SW_CORE2------------------------
+
+
+conf t
+host SW-CORE2
+vlan 10
+exit
+vlan 20
+exit
+
+interface vlan10
+ip address 192.168.200.3 255.255.255.224
+exit
+
+interface vlan20
+ip address 192.168.201.3 255.255.255.0
+exit
+
+interface fa0/2
+description VA HACIA SW-ACCESO1
+switchport trunk encapsulation dot1q
+switchport mode trunk 
+exit
+
+interface fa0/3
+description VA HACIA SW-ACCESO2
+switchport trunk encapsulation dot1q
+switchport mode trunk 
+exit
+
+interface fa0/1
+description VA HACIA SW-CORE1
+switchport trunk encapsulation dot1q
+switchport mode trunk 
+exit
+
+interface fa0/4
+description VA HACIA SW-BORDE
+no switchport
+ip address 192.168.100.3 255.255.255.248 
+ip access-group 110 out 
+exit
+
+ip route 0.0.0.0 0.0.0.0 192.168.100.4
+
+
+
+ROUTER NAT----------------------
+
+conf t
+host R-NAT
+
+interface GigabitEthernet0/1
+description HACIA SWITCH BORDE
+ip address 192.168.100.4 255.255.255.248
+exit
+
+ip nat inside
+
+
+interface GigabitEthernet0/0
+description HACIA DMZ
+ip address 172.20.20.1 255.255.255.0
+exit
+
+ip nat outside
+
+ip nat inside source static 192.168.0.10 172.20.20.3
+ip nat inside source static 192.168.0.20 172.20.20.4
+ip nat inside source static 192.168.0.30 172.20.20.5
+ip nat inside source static 192.168.0.40 172.20.20.6
+ip nat inside source static 192.168.0.50 172.20.20.7
+ip nat inside source static 192.168.0.60 172.20.20.8
+
+access-list 10 remark PERMITIR RED NOC e IT
+access-list 10 permit any
+
+PAT---------
+ip nat inside source list 10 interface GigabitEthernet0/0 overload
+
+access-list 120 permit tcp host 192.168.200.10 host 192.168.0.10 eq www
